@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    html{scroll-behavior:smooth}
+    @keyframes ncMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .nc-marquee-track{animation:ncMarquee 26s linear infinite}
+    @media (prefers-reduced-motion: reduce){.nc-marquee-track{animation:none}}
+    body{margin:0;background:#050505;-webkit-font-smoothing:antialiased}
+    ::selection{background:#F5A515;color:#050505}
+    a{color:inherit;text-decoration:none}
+    @keyframes waBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+    @keyframes ncLoaderBar{from{width:0%}to{width:100%}}
+    .nc-loader-bar{animation:ncLoaderBar 1.7s cubic-bezier(.16,1,.3,1) forwards}
+    @media (prefers-reduced-motion: reduce){.nc-loader-bar{animation:none;width:100%}}
+  </style>
+</helmet>
+
+<div style="--obsidian:#050505;--graphite:#151719;--panel:#1C1E20;--warm:#F3F1EA;--concrete:#DCD8CF;--white:#FFFFFF;--orange:#F5A515;--ink:#141414;--fd:'Sora',sans-serif;--fm:'IBM Plex Mono',monospace; background:var(--obsidian); color:var(--warm); font-family:var(--fd); position:relative; overflow-x:hidden; width:100%;">
+
+  <sc-if value="{{ !loaderRemoved }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed;inset:0;z-index:200;background:var(--obsidian);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;opacity:{{ loaderDone ? 0 : 1 }};pointer-events:{{ loaderDone ? 'none' : 'auto' }};transition:opacity 0.7s ease;">
+      <img src="images/loader-logo.jpg" alt="NewCollor" style="width:min(260px,58vw);height:auto;display:block;mix-blend-mode:screen;" />
+      <div style="width:130px;height:1px;background:rgba(243,241,234,0.15);overflow:hidden;position:relative;">
+        <div class="nc-loader-bar" style="position:absolute;top:0;left:0;height:100%;background:var(--orange);"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- NAV -->
+  <nav style="{{ navStyle }}">
+<a href="#hero" style="display:flex;align-items:center;align-self:stretch;background:{{ navLogoBg }};padding:0 clamp(14px,2.2vw,24px) 0 clamp(20px,4vw,56px);margin-left:calc(-1 * clamp(20px,4vw,56px));transition:background 0.4s ease;">
+      <img src="images/logo-nav-bw.png" alt="NewCollor — alpinismo industrial e pinturas especiais" style="height:{{ navLogoHeight }}px;width:auto;max-width:none;object-fit:contain;display:block;filter:{{ navLogoFilter }};transition:filter 0.4s ease;" />
+    </a>
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:32px;">
+        <a href="#solucoes" style="{{ navLinkStyle }}">SOLUÇÕES</a>
+        <a href="#metodo" style="{{ navLinkStyle }}">ATUAÇÃO</a>
+        <a href="#seguranca" style="{{ navLinkStyle }}">SEGURANÇA</a>
+        <a href="#empresa" style="{{ navLinkStyle }}">EMPRESA</a>
+        <a href="#contato" style="{{ navLinkStyle }}">CONTATO</a>
+      </div>
+      <a href="#contato" style="{{ navCtaStyle }}" style-hover="{{ navCtaHoverStyle }}">SOLICITAR VISITA</a>
+    </sc-if>
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <button aria-label="Abrir menu" onClick="{{ toggleMenu }}" style="background:none;border:none;color:{{ navTextColor }};display:flex;flex-direction:column;gap:5px;padding:8px;">
+        <span style="width:20px;height:1px;background:{{ navTextColor }};display:block;"></span>
+        <span style="width:20px;height:1px;background:{{ navTextColor }};display:block;"></span>
+      </button>
+    </sc-if>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div style="{{ mobileMenuStyle }}">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;">
+      <img src="images/logo-nav-bw.png" alt="NewCollor" style="height:26px;width:auto;display:block;mix-blend-mode:screen;" />
+      <button aria-label="Fechar menu" onClick="{{ toggleMenu }}" style="background:none;border:none;color:var(--warm);font-family:var(--fm);font-size:11px;padding:8px;">FECHAR ✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;padding:8px 24px;">
+      <sc-for list="{{ menuItems }}" as="mi" hint-placeholder-count="5">
+        <a href="{{ mi.href }}" onClick="{{ toggleMenu }}" style="{{ mi.style }}">
+          <span style="font-family:var(--fm);font-size:11px;color:var(--orange);margin-right:14px;">{{ mi.n }}</span>{{ mi.label }}
+        </a>
+      </sc-for>
+    </div>
+    <div style="margin-top:auto;padding:24px;display:flex;gap:20px;font-family:var(--fm);font-size:11px;letter-spacing:0.05em;color:rgba(243,241,234,0.6);">
+      <a href="{{ waLink }}">WHATSAPP</a><a href="mailto:{{ contactEmail }}">EMAIL</a>
+    </div>
+  </div>
+
+  <!-- 01 HERO -->
+  <section id="hero" style="{{ heroSectionStyle }}" onMouseMove="{{ onHeroMouseMove }}" onMouseLeave="{{ onHeroMouseLeave }}">
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <img src="images/hero-desktop.png" alt="NewCollor — alpinista industrial cruzando a marca, logotipo iluminado" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:{{ heroImgTransform }};transition:transform 0.2s ease-out;" />
+    </sc-if>
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <img src="images/hero-mobile.png" alt="NewCollor — alpinista industrial cruzando a marca, logotipo iluminado" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;object-position:top center;transform:scale({{ heroScale }});transition:transform 0.15s linear;" />
+    </sc-if>
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,5,5,0.8) 0%,rgba(5,5,5,0.5) 38%,rgba(5,5,5,0.08) 60%,transparent 72%);"></div>
+    </sc-if>
+    <div style="{{ heroContentStyle }}">
+      <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.09em;color:var(--concrete);margin-bottom:18px;line-height:1.6;opacity:{{ heroOp }};transition:opacity 0.6s ease;">NEWCOLLOR<br/>ALPINISMO INDUSTRIAL • PINTURAS ESPECIAIS</div>
+      <h1 style="font-size:clamp(2.1rem,3.8vw,4.2rem);line-height:1.1;font-weight:700;letter-spacing:-0.01em;color:var(--white);margin:0 0 18px 0;overflow-wrap:break-word;opacity:{{ heroOp }};transform:translateY({{ heroOp==1 ? 0 : 10 }}px);transition:all 0.7s cubic-bezier(.16,1,.3,1) 0.1s;">Soluções que chegam<br/>onde poucas chegam.</h1>
+      <p style="font-size:15px;line-height:1.6;color:var(--concrete);max-width:380px;margin:0 0 16px 0;opacity:{{ heroOp }};transition:opacity 0.6s ease 0.2s;">Manutenção predial, pintura industrial e soluções técnicas para operações de alta complexidade.</p>
+      <div style="display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:11px;letter-spacing:0.06em;color:rgba(220,216,207,0.7);margin-bottom:20px;opacity:{{ heroOp }};transition:opacity 0.6s ease 0.25s;">
+        <span>ATUAÇÃO EM</span>
+        <span style="font-size:16px;font-weight:700;letter-spacing:0.01em;border-bottom:2px solid var(--orange);padding-bottom:2px;color:{{ glitchColor }};transform:{{ glitchTransform }};transition:transform 0.12s ease,color 0.12s ease;">{{ heroWord }}</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:32px;opacity:{{ heroOp }};transition:opacity 0.6s ease 0.3s;">
+        <a href="#solucoes" style="background:var(--warm);color:var(--ink);font-size:13px;letter-spacing:0.01em;font-weight:700;padding:14px 24px;border-radius:4px;transition:transform 0.25s cubic-bezier(.16,1,.3,1),box-shadow 0.25s ease;display:inline-flex;" style-hover="transform:translateY(-3px) scale(1.03);box-shadow:0 14px 30px rgba(0,0,0,0.4);">CONHEÇA A NEWCOLLOR</a>
+        <a href="#contato" style="border:1px solid rgba(243,241,234,0.45);color:var(--warm);font-size:13px;letter-spacing:0.01em;font-weight:700;padding:14px 24px;border-radius:4px;transition:transform 0.25s cubic-bezier(.16,1,.3,1),background 0.25s ease,border-color 0.25s ease;display:inline-flex;" style-hover="transform:translateY(-3px) scale(1.03);background:rgba(243,241,234,0.1);border-color:rgba(243,241,234,0.8);">SOLICITAR VISITA TÉCNICA</a>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;font-family:var(--fm);font-size:10px;letter-spacing:0.06em;color:rgba(220,216,207,0.6);opacity:{{ heroOp }};transition:opacity 0.6s ease 0.35s;">
+        <span>DESDE 1979</span><span>·</span><span>SÃO PAULO</span><span>·</span><span>PREDIAL + INDUSTRIAL</span><span>·</span><span>TRABALHOS EM ALTURA</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 CREDIBILITY STRIP -->
+  <section ref="{{ credRef }}" style="background:var(--warm);color:var(--ink);padding:{{ isMobile ? '40px' : '0' }} clamp(24px,6vw,80px);">
+    <div style="display:grid;grid-template-columns:{{ isMobile ? '1fr' : 'repeat(4,1fr)' }};gap:{{ isMobile ? '0' : '0' }};">
+      <sc-for list="{{ credItems }}" as="c" hint-placeholder-count="4">
+        <div style="{{ c.wrapStyle }}">
+          <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid rgba(20,20,20,0.15);">
+              <span style="font-size:17px;font-weight:700;white-space:nowrap;">{{ c.n }}</span>
+              <span style="font-family:var(--fm);font-size:10px;letter-spacing:0.05em;color:rgba(20,20,20,0.6);text-align:right;">{{ c.l }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+            <div style="width:1px;background:rgba(20,20,20,0.25);height:{{ vis.cred }};transition:height 1s cubic-bezier(.16,1,.3,1) {{ c.delay }};margin-bottom:16px;"></div>
+            <div style="font-size:19px;font-weight:700;margin-bottom:6px;">{{ c.n }}</div>
+            <div style="font-family:var(--fm);font-size:10px;letter-spacing:0.06em;color:rgba(20,20,20,0.6);">{{ c.l }}</div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- WORD RIBBON -->
+  <div style="position:relative;background:var(--obsidian);overflow:hidden;padding:20px 0;border-top:1px solid rgba(243,241,234,0.1);border-bottom:1px solid rgba(243,241,234,0.1);">
+    <div class="nc-marquee-track" style="display:flex;width:max-content;gap:40px;white-space:nowrap;">
+      <div style="display:flex;align-items:center;gap:40px;">
+        <span style="font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-0.01em;color:var(--warm);">ALPINISMO INDUSTRIAL</span>
+        <span style="font-size:20px;color:var(--orange);">/</span>
+        <span style="font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-0.01em;color:rgba(243,241,234,0.35);">PINTURAS ESPECIAIS</span>
+        <span style="font-size:20px;color:var(--orange);">/</span>
+        <span style="font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-0.01em;color:var(--warm);">MANUTENÇÃO PREDIAL</span>
+        <span style="font-size:20px;color:var(--orange);">/</span>
+        <span style="font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-0.01em;color:rgba(243,241,234,0.35);">TRABALHOS EM ALTURA</span>
+        <span style="font-size:20px;color:var(--orange);">/</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:40px;">
+        <span style="font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-0.01em;color:var(--warm);">ALPINISMO INDUSTRIAL</span>
+        <span style="font-size:20px;color:var(--orange);">/</span>
+        <span style="font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-0.01em;color:rgba(243,241,234,0.35);">PINTURAS ESPECIAIS</span>
+        <span style="font-size:20px;color:var(--orange);">/</span>
+        <span style="font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-0.01em;color:var(--warm);">MANUTENÇÃO PREDIAL</span>
+        <span style="font-size:20px;color:var(--orange);">/</span>
+        <span style="font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-0.01em;color:rgba(243,241,234,0.35);">TRABALHOS EM ALTURA</span>
+        <span style="font-size:20px;color:var(--orange);">/</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 BRAND STATEMENT -->
+  <section ref="{{ brandRef }}" style="background:var(--warm);color:var(--ink);padding:{{ padY }} clamp(24px,6vw,80px);">
+    <div style="display:grid;grid-template-columns:{{ isMobile ? '1fr' : '0.85fr 1.15fr' }};gap:clamp(28px,4vw,64px);margin-bottom:56px;">
+      <div>
+        <div style="font-size:13px;font-family:var(--fm);color:rgba(20,20,20,0.5);margin-bottom:10px;">01</div>
+        <div style="width:24px;height:2px;background:var(--orange);margin-bottom:22px;"></div>
+        <h2 style="font-size:clamp(1.6rem,2.6vw,2.3rem);line-height:1.2;font-weight:700;letter-spacing:-0.01em;margin:0;">EXPERIÊNCIA PARA OPERAR ONDE O CONVENCIONAL NÃO CHEGA.</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <p style="font-size:15px;line-height:1.7;color:rgba(20,20,20,0.75);margin:0;max-width:480px;">Operamos em fachadas, coberturas, estruturas e plantas industriais que exigem acesso técnico e planejamento rigoroso de segurança.</p>
+        <p style="font-size:15px;line-height:1.7;color:rgba(20,20,20,0.75);margin:0;max-width:480px;">Alpinismo industrial, pintura técnica e engenharia de manutenção reunidos em um único time, sem intermediários.</p>
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:11px;letter-spacing:0.06em;color:rgba(20,20,20,0.5);">
+          <span>FOCO EM</span>
+          <span style="font-size:15px;font-weight:800;letter-spacing:0.01em;border-bottom:2px solid var(--orange);padding-bottom:2px;color:{{ glitchColor }};transform:{{ glitchTransform }};transition:transform 0.12s ease,color 0.12s ease;">{{ brandWord }}</span>
+        </div>
+      </div>
+    </div>
+    <div style="position:relative;aspect-ratio:{{ isMobile ? '4/5' : '16/7' }};background-image:repeating-linear-gradient(90deg,rgba(20,20,20,0.09) 0px,rgba(20,20,20,0.09) 1px,transparent 1px,transparent 56px),repeating-linear-gradient(0deg,rgba(20,20,20,0.09) 0px,rgba(20,20,20,0.09) 1px,transparent 1px,transparent 56px);overflow:hidden;">
+      <div style="position:absolute;left:30%;top:0;width:2px;height:{{ vis.rope }};background:linear-gradient(180deg,var(--orange),rgba(20,20,20,0.5));transition:height 1.4s cubic-bezier(.16,1,.3,1);"></div>
+      <div style="position:absolute;left:30%;top:22%;width:8px;height:8px;border-radius:50%;background:var(--orange);transform:translate(-3px,0);opacity:{{ vis.dot1 }};transition:opacity 0.5s ease 0.4s;"></div>
+      <div style="position:absolute;left:30%;top:58%;width:8px;height:8px;border-radius:50%;background:var(--orange);transform:translate(-3px,0);opacity:{{ vis.dot2 }};transition:opacity 0.5s ease 0.8s;"></div>
+      <div style="position:absolute;left:60%;top:40%;width:6px;height:6px;border-radius:50%;background:rgba(20,20,20,0.4);opacity:{{ vis.dot2 }};transition:opacity 0.5s ease 1s;"></div>
+      <span style="position:absolute;top:16px;right:18px;font-family:var(--fm);font-size:10px;letter-spacing:0.05em;color:rgba(20,20,20,0.4);">X:04 / Y:12</span>
+      <span style="position:absolute;bottom:16px;left:18px;font-family:var(--fm);font-size:10px;letter-spacing:0.05em;color:rgba(20,20,20,0.4);">ELEVAÇÃO 01</span>
+    </div>
+  </section>
+
+  <!-- 04 SOLUTIONS -->
+  <section id="solucoes" ref="{{ servicesRef }}" style="background:var(--graphite);color:var(--warm);padding:{{ padY }} clamp(24px,6vw,80px);{{ servicesReveal }}">
+    <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:rgba(243,241,234,0.5);margin-bottom:16px;">02 / SOLUÇÕES</div>
+    <h2 style="font-size:clamp(1.7rem,2.6vw,2.4rem);font-weight:700;letter-spacing:-0.01em;margin:0 0 40px 0;">UM ESCOPO.<br/>DIFERENTES DESAFIOS.</h2>
+    <div>
+      <sc-for list="{{ services }}" as="sv" hint-placeholder-count="8">
+        <div onMouseEnter="{{ sv.onHover }}" onMouseLeave="{{ sv.onLeave }}" onClick="{{ sv.onToggleMobile }}" style="{{ sv.rowStyle }}">
+          <div style="position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--orange);transform:scaleY({{ sv.active ? 1 : 0 }});transition:transform 0.35s ease;"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;">
+            <div style="display:flex;align-items:baseline;gap:20px;transform:translateX({{ sv.active ? 6 : 0 }}px);transition:transform 0.3s ease;">
+              <span style="font-family:var(--fm);font-size:12px;color:{{ sv.numColor }};min-width:24px;">{{ sv.n }}</span>
+              <span style="font-size:clamp(17px,2vw,22px);font-weight:600;color:var(--warm);">{{ sv.title }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:24px;">
+              <div style="position:relative;width:44px;height:44px;flex-shrink:0;">
+                <sc-for list="{{ sv.iconLines }}" as="ln" hint-placeholder-count="3">
+                  <div style="{{ ln }}"></div>
+                </sc-for>
+              </div>
+              <span style="font-family:var(--fm);font-size:15px;color:var(--orange);transform:translateX({{ sv.active ? 4 : 0 }}px);transition:transform 0.3s;">→</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-rows:{{ sv.descRows }};transition:grid-template-rows 0.4s ease;overflow:hidden;">
+            <p style="min-height:0;overflow:hidden;margin:14px 0 0 44px;font-size:14px;line-height:1.6;color:rgba(243,241,234,0.6);max-width:440px;">{{ sv.desc }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- 05 WORK AT HEIGHT -->
+  <section ref="{{ heightRef }}" style="position:relative;background:var(--obsidian);overflow:hidden;padding:{{ padY }} clamp(24px,6vw,80px);">
+    <div style="position:relative;z-index:1;max-width:480px;opacity:{{ vis.height_op }};transition:opacity 0.8s ease;">
+      <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:var(--orange);margin-bottom:16px;">TRABALHOS EM ALTURA</div>
+      <h3 style="font-size:clamp(1.6rem,2.6vw,2.2rem);font-weight:700;line-height:1.2;margin:0 0 16px 0;">Quando o acesso convencional termina, começa a especialização.</h3>
+      <p style="font-size:14px;line-height:1.7;color:rgba(243,241,234,0.65);margin:0 0 20px 0;">Equipe própria, certificada e treinada para operar em fachadas, torres e estruturas de grande altura.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px 18px;font-family:var(--fm);font-size:11px;letter-spacing:0.05em;color:rgba(243,241,234,0.6);border-top:1px solid rgba(243,241,234,0.15);padding-top:14px;">
+        <span>NR-35</span><span>NR-18</span><span>APR</span><span>ART</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 OPERATING MODEL -->
+  <section id="metodo" ref="{{ processRef }}" style="background:var(--concrete);color:var(--ink);padding:{{ padY }} clamp(24px,6vw,80px);{{ processReveal }}">
+    <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:rgba(20,20,20,0.55);margin-bottom:16px;">03 / MÉTODO</div>
+    <h2 style="font-size:clamp(1.7rem,2.6vw,2.4rem);font-weight:700;line-height:1.2;letter-spacing:-0.01em;margin:0 0 48px 0;">PLANEJAMENTO ANTES<br/>DA PRIMEIRA DEMÃO.</h2>
+    <div style="position:relative;">
+      <div style="position:absolute;{{ processLineAxis }};background:rgba(20,20,20,0.18);"></div>
+      <div style="position:absolute;{{ processLineFillAxis }};background:var(--orange);transition:width 1.2s cubic-bezier(.16,1,.3,1),height 1.2s cubic-bezier(.16,1,.3,1);"></div>
+      <div style="{{ processListStyle }}">
+        <sc-for list="{{ processSteps }}" as="st" hint-placeholder-count="5">
+          <div style="{{ st.wrapStyle }}">
+            <span style="font-family:var(--fm);font-size:12px;color:var(--orange);display:block;margin-bottom:8px;">{{ st.n }}</span>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">{{ st.title }}</div>
+            <p style="font-size:12px;line-height:1.6;color:rgba(20,20,20,0.65);margin:0;max-width:200px;">{{ st.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 SAFETY -->
+  <section id="seguranca" ref="{{ safetyRef }}" style="background:var(--orange);color:var(--ink);padding:{{ padY }} clamp(24px,6vw,80px);{{ safetyReveal }}">
+    <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:rgba(20,20,20,0.7);margin-bottom:20px;">04 / SEGURANÇA</div>
+    <div style="display:grid;grid-template-columns:{{ isMobile ? '1fr' : '0.7fr 1.3fr' }};gap:40px;">
+      <div>
+        <h2 style="font-size:clamp(1.8rem,2.8vw,2.6rem);font-weight:700;line-height:1.15;letter-spacing:-0.01em;margin:0 0 16px 0;">SEGURANÇA FAZ<br/>PARTE DO MÉTODO.</h2>
+        <p style="font-size:14px;line-height:1.65;color:rgba(20,20,20,0.75);max-width:340px;margin:0;">Nenhuma operação começa sem procedimento, equipamento e responsabilidade técnica definidos.</p>
+      </div>
+      <div style="position:relative;overflow:hidden;border-top:1px solid rgba(20,20,20,0.45);">
+        <div style="position:absolute;left:0;right:0;top:0;height:1px;background:rgba(20,20,20,0.9);transform:translateY({{ scanY }}%);opacity:{{ scanOp }};transition:transform 1.5s ease,opacity 1.5s ease;"></div>
+        <sc-for list="{{ safetyRows }}" as="sr" hint-placeholder-count="5">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid rgba(20,20,20,0.35);">
+            <span style="font-family:var(--fm);font-size:13px;font-weight:600;min-width:56px;">{{ sr.code }}</span>
+            <span style="font-family:var(--fm);font-size:12px;letter-spacing:0.04em;color:rgba(20,20,20,0.75);text-align:right;">{{ sr.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 MATERIALS -->
+  <section ref="{{ materialRef }}" style="background:var(--panel);color:var(--warm);padding:{{ isMobile ? '40px' : '52px' }} clamp(24px,6vw,80px);{{ materialReveal }}">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+      <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:rgba(243,241,234,0.5);">05 / MATERIAIS</div>
+      <div style="font-size:14px;font-weight:600;">SUPERFÍCIES DIFERENTES. SOLUÇÕES ESPECÍFICAS.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:{{ materialCols }};gap:10px;max-width:680px;">
+      <sc-for list="{{ materials }}" as="m" hint-placeholder-count="5">
+        <div onMouseEnter="{{ m.onEnter }}" onMouseLeave="{{ m.onLeave }}" style="display:flex;flex-direction:column;gap:8px;">
+          <div style="position:relative;aspect-ratio:1/1;overflow:hidden;background:{{ m.bg }};border-radius:2px;">
+            <div style="position:absolute;inset:0;background:rgba(0,0,0,{{ m.hover ? 0.25 : 0 }});transition:background 0.3s ease;"></div>
+          </div>
+          <span style="font-family:var(--fm);font-size:9px;letter-spacing:0.04em;color:rgba(243,241,234,0.6);line-height:1.4;">{{ m.name }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- 09 EXPERIENCE -->
+  <section ref="{{ expRef }}" style="background:var(--warm);color:var(--ink);padding:{{ padY }} clamp(24px,6vw,80px);">
+    <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:rgba(20,20,20,0.55);margin-bottom:24px;">06 / EXPERIÊNCIA</div>
+    <div style="display:grid;grid-template-columns:{{ isMobile ? '1fr' : 'auto 1fr' }};gap:clamp(24px,4vw,56px);align-items:end;margin-bottom:48px;">
+      <div style="display:flex;align-items:baseline;gap:14px;">
+        <span style="font-size:clamp(3.2rem,7vw,5.6rem);font-weight:800;letter-spacing:-0.02em;line-height:0.9;">1979</span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:0.06em;color:rgba(20,20,20,0.5);">DESDE</span>
+      </div>
+      <h2 style="font-size:clamp(1.5rem,2.2vw,2rem);font-weight:700;line-height:1.25;letter-spacing:-0.01em;margin:0;">DÉCADAS DE<br/>EXPERIÊNCIA DE CAMPO.</h2>
+    </div>
+    <div style="position:relative;padding-top:20px;">
+      <div style="position:absolute;left:0;right:0;top:0;height:1px;background:rgba(20,20,20,0.18);"></div>
+      <div style="position:absolute;left:0;top:0;height:1px;background:var(--orange);width:{{ vis.exp_line }};transition:width 1.3s cubic-bezier(.16,1,.3,1);"></div>
+      <div style="display:flex;gap:48px;flex-wrap:wrap;">
+        <sc-for list="{{ timeline }}" as="tl" hint-placeholder-count="3">
+          <div style="min-width:140px;">
+            <div style="font-family:var(--fm);font-size:13px;color:var(--orange);margin-bottom:8px;">{{ tl.year }}</div>
+            <div style="font-size:13px;line-height:1.6;color:rgba(20,20,20,0.7);max-width:200px;">{{ tl.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 SELECTED WORK -->
+  <section id="obras" ref="{{ workRef }}" style="background:var(--warm);color:var(--ink);padding:{{ padY }} clamp(24px,6vw,80px);{{ workReveal }}">
+    <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:rgba(20,20,20,0.55);margin-bottom:16px;">07 / OBRAS</div>
+    <h2 style="font-size:clamp(1.7rem,2.6vw,2.4rem);font-weight:700;line-height:1.2;letter-spacing:-0.01em;margin:0 0 44px 0;max-width:640px;">ALGUNS DOS DESAFIOS QUE JÁ PASSARAM POR AQUI.</h2>
+    <div>
+      <sc-for list="{{ works }}" as="w" hint-placeholder-count="8">
+        <a href="#" onMouseEnter="{{ w.onEnter }}" onMouseLeave="{{ w.onLeave }}" style="{{ w.rowStyle }}">
+          <div style="position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--orange);transform:scaleY({{ w.hover ? 1 : 0 }});transition:transform 0.3s ease;"></div>
+          <div style="display:flex;align-items:baseline;gap:20px;transform:translateX({{ w.hover ? 6 : 0 }}px);transition:transform 0.3s ease;">
+            <span style="font-family:var(--fm);font-size:11px;color:rgba(20,20,20,0.45);min-width:22px;">{{ w.n }}</span>
+            <span style="font-size:clamp(15px,1.8vw,19px);font-weight:600;">{{ w.title }}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:24px;">
+            <span style="font-family:var(--fm);font-size:11px;letter-spacing:0.05em;color:rgba(20,20,20,0.5);">{{ w.location }}</span>
+            <span style="font-family:var(--fm);font-size:14px;color:var(--orange);transform:translateX({{ w.hover ? 4 : 0 }}px);transition:transform 0.3s;">↗</span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- 11 WHY NEWCOLLOR -->
+  <section id="empresa" ref="{{ whyRef }}" style="background:var(--graphite);color:var(--warm);padding:{{ padY }} clamp(24px,6vw,80px);{{ whyReveal }}">
+    <div style="font-family:var(--fm);font-size:11px;letter-spacing:0.08em;color:rgba(243,241,234,0.5);margin-bottom:16px;">08 / NEWCOLLOR</div>
+    <h2 style="font-size:clamp(1.7rem,2.6vw,2.4rem);font-weight:700;line-height:1.2;letter-spacing:-0.01em;margin:0 0 48px 0;">TÉCNICA NO DETALHE.<br/>RESPONSABILIDADE NO TODO.</h2>
+    <div style="display:grid;grid-template-columns:{{ isMobile ? '1fr 1fr' : 'repeat(4,1fr)' }};">
+      <sc-for list="{{ whyItems }}" as="wi" hint-placeholder-count="4">
+        <div style="{{ wi.wrapStyle }}">
+          <div style="width:6px;height:6px;border-radius:50%;background:var(--orange);opacity:{{ wi.dotOp }};transition:opacity 0.5s ease {{ wi.delay }};margin-bottom:16px;"></div>
+          <div style="font-size:14px;font-weight:700;letter-spacing:0.02em;margin-bottom:10px;">{{ wi.title }}</div>
+          <p style="font-size:13px;line-height:1.6;color:rgba(243,241,234,0.6);margin:0;">{{ wi.desc }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- 12 CONTACT CTA -->
+  <section id="contato" ref="{{ ctaRef }}" style="position:relative;background:var(--obsidian);color:var(--warm);padding:{{ padY }} clamp(24px,6vw,80px);min-height:60vh;display:flex;align-items:center;overflow:hidden;{{ ctaReveal }}">
+    <div style="position:absolute;top:-10%;left:8%;width:1px;height:120%;background:linear-gradient(180deg,transparent,rgba(76,201,240,0.25),transparent);transform:rotate(8deg);"></div>
+    <div style="position:absolute;top:-10%;left:22%;width:1px;height:120%;background:linear-gradient(180deg,transparent,rgba(140,107,255,0.2),transparent);transform:rotate(6deg);"></div>
+    <div style="position:absolute;top:-10%;right:15%;width:1px;height:120%;background:linear-gradient(180deg,transparent,rgba(217,70,168,0.18),transparent);transform:rotate(-6deg);"></div>
+    <div style="position:relative;z-index:1;max-width:520px;">
+      <h2 style="font-size:clamp(1.9rem,3vw,2.8rem);font-weight:700;line-height:1.15;letter-spacing:-0.01em;margin:0 0 16px 0;">SEU PRÓXIMO DESAFIO<br/>PODE COMEÇAR AQUI.</h2>
+      <p style="font-size:15px;line-height:1.65;color:var(--concrete);margin:0 0 32px 0;">Fale com a NewCollor e solicite uma avaliação técnica.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:32px;">
+        <a href="{{ waLink }}" target="_blank" rel="noopener" style="background:var(--warm);color:var(--ink);font-size:13px;letter-spacing:0.01em;font-weight:700;padding:15px 26px;border-radius:4px;transition:transform 0.25s cubic-bezier(.16,1,.3,1),box-shadow 0.25s ease;display:inline-flex;" style-hover="transform:translateY(-3px) scale(1.03);box-shadow:0 14px 32px rgba(0,0,0,0.45);">SOLICITAR VISITA TÉCNICA</a>
+        <a href="{{ waLink }}" target="_blank" rel="noopener" style="border:1px solid rgba(243,241,234,0.4);color:var(--warm);font-size:13px;letter-spacing:0.01em;font-weight:700;padding:15px 26px;border-radius:4px;transition:transform 0.25s cubic-bezier(.16,1,.3,1),background 0.25s ease,border-color 0.25s ease;display:inline-flex;" style-hover="transform:translateY(-3px) scale(1.03);background:rgba(243,241,234,0.1);border-color:rgba(243,241,234,0.8);">FALAR PELO WHATSAPP</a>
+      </div>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;font-family:var(--fm);font-size:11px;letter-spacing:0.04em;color:rgba(243,241,234,0.55);">
+        <span>{{ contactEmail }}</span><span>·</span><span>SÃO PAULO — SP</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="background:var(--obsidian);color:var(--warm);padding:44px clamp(24px,6vw,80px) 24px;">
+    <div style="overflow:hidden;padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid rgba(243,241,234,0.12);">
+      <div style="font-weight:700;letter-spacing:-0.01em;font-size:clamp(26px,4vw,44px);line-height:1;color:{{ glitchColor }};transform:{{ glitchTransform }};transition:transform 0.12s ease,color 0.12s ease;white-space:nowrap;">{{ navWord }}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:{{ isMobile ? '1fr' : 'repeat(4,1fr)' }};gap:28px;border-bottom:1px solid rgba(243,241,234,0.12);padding-bottom:32px;margin-bottom:20px;">
+      <div>
+        <p style="font-family:var(--fm);font-size:11px;line-height:1.6;color:rgba(243,241,234,0.5);max-width:200px;margin:0;">Alpinismo industrial e pinturas especiais desde 1979.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-family:var(--fm);font-size:11px;letter-spacing:0.04em;color:rgba(243,241,234,0.7);">
+        <span style="color:rgba(243,241,234,0.4);margin-bottom:4px;">NAVEGAÇÃO</span>
+        <a href="#solucoes">SOLUÇÕES</a><a href="#metodo">ATUAÇÃO</a><a href="#seguranca">SEGURANÇA</a><a href="#empresa">EMPRESA</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-family:var(--fm);font-size:11px;letter-spacing:0.04em;color:rgba(243,241,234,0.7);">
+        <span style="color:rgba(243,241,234,0.4);margin-bottom:4px;">CONTATO</span>
+        <a href="{{ waLink }}">WHATSAPP</a><a href="mailto:{{ contactEmail }}">{{ contactEmail }}</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-family:var(--fm);font-size:11px;letter-spacing:0.04em;color:rgba(243,241,234,0.7);">
+        <span style="color:rgba(243,241,234,0.4);margin-bottom:4px;">ATUAÇÃO</span>
+        <span>São Paulo — SP</span><span>Predial + Industrial</span>
+      </div>
+    </div>
+    <div style="font-family:var(--fm);font-size:10px;color:rgba(243,241,234,0.4);">© {{ currentYear }} NEWCOLLOR ALPINISMO INDUSTRIAL E PINTURAS ESPECIAIS.</div>
+  </footer>
+
+  <!-- WHATSAPP -->
+  <div style="{{ waWrapStyle }}">
+    <div style="{{ waRingStyle }}"></div>
+    <a href="{{ waLink }}" target="_blank" rel="noopener" aria-label="Falar pelo WhatsApp" style="{{ waButtonStyle }}" style-hover="{{ waButtonHoverStyle }}">
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none" style="flex-shrink:0;">
+        <path d="M16 3C9 3 3.4 8.5 3.4 15.3c0 2.8.9 5.4 2.6 7.6L4.5 28l5.3-1.4c2 1.1 4.3 1.7 6.2 1.7 7 0 12.6-5.5 12.6-12.3S23 3 16 3z" fill="#050505"/>
+        <path d="M16 5.4c-5.7 0-10.3 4.5-10.3 10 0 2.3.8 4.4 2.1 6.1l-1.4 4.2 4.4-1.4c1.6 1 3.4 1.5 5.2 1.5 5.7 0 10.3-4.5 10.3-10s-4.6-10.4-10.3-10.4z" fill="#25D366"/>
+        <path d="M12.4 10.6c.3-.6.6-.6.9-.6h.7c.2 0 .5 0 .7.5s.9 2.1 1 2.3c.1.2.1.4 0 .6-.4.8-.9 1-1.2 1.3-.2.2-.1.4 0 .6.6 1 1.4 1.8 2.6 2.4.3.1.5.1.7-.1.2-.2.8-.9 1-1.2.2-.3.4-.2.7-.1.3.1 1.9.9 2.2 1.1.3.1.5.2.5.4 0 .2 0 1-.4 1.6-.4.6-1.9 1.3-2.6 1.3-.7 0-2.3-.2-4.4-1.9-2.6-2-4.2-4.7-4.4-5.2-.2-.4-1-1.6-1-2.9 0-1.3.7-2 1-2.3z" fill="#050505"/>
+      </svg>
+      <span style="{{ waLabelStyle }}" style-hover="{{ waLabelHoverStyle }}">FALAR PELO WHATSAPP</span>
+    </a>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;whatsappNumber&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;5511951007967&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contato&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;contato@newcollor.com.br&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contato&quot;}}">
+class Component extends DCLogic {
+  state = {
+    scrollY: 0,
+    scrolled: false,
+    menuOpen: false,
+    reducedMotion: false,
+    loaderDone: false,
+    loaderRemoved: false,
+    visible: {},
+    hoverService: null,
+    openServiceMobile: null,
+    hoverWork: null,
+    hoverMaterial: null,
+    waRing: false,
+    scanActive: false,
+    wordTick: 0,
+    glitching: false,
+    heroMouse: { x: 0, y: 0 },
+  };
+
+  heroWords = ['FACHADAS', 'INDÚSTRIAS', 'COBERTURAS', 'ESTRUTURAS'];
+  navWords = ['ALPINISMO INDUSTRIAL', 'PINTURAS ESPECIAIS'];
+  brandWords = ['TÉCNICA', 'SEGURANÇA', 'PRECISÃO', 'EXPERIÊNCIA'];
+
+  services = [
+    { n: '01', title: 'MANUTENÇÃO PREDIAL', desc: 'Limpeza de fachadas, impermeabilização e reparos estruturais em edifícios ocupados.', icon: 'facade' },
+    { n: '02', title: 'PINTURA INDUSTRIAL', desc: 'Revestimentos e pintura técnica para plantas industriais e estruturas metálicas.', icon: 'layers' },
+    { n: '03', title: 'TRABALHOS EM ALTURA', desc: 'Acesso por corda para operações em fachadas, torres e estruturas de grande porte.', icon: 'rope' },
+    { n: '04', title: 'RECUPERAÇÃO DE FACHADAS', desc: 'Diagnóstico, tratamento de patologias e restauração de revestimentos externos.', icon: 'patch' },
+    { n: '05', title: 'PISOS INDUSTRIAIS', desc: 'Sistemas de piso epóxi e poliuretano para ambientes de alta exigência.', icon: 'floor' },
+    { n: '06', title: 'SINALIZAÇÃO INDUSTRIAL', desc: 'Demarcação normativa e sinalização de segurança para operações industriais.', icon: 'hazard' },
+    { n: '07', title: 'ESTRUTURAS E COBERTURAS', desc: 'Intervenção em coberturas, estruturas metálicas e elementos de grande altura.', icon: 'beam' },
+    { n: '08', title: 'SOLUÇÕES ESPECIAIS', desc: 'Operações técnicas fora do padrão, planejadas caso a caso.', icon: 'dots' },
+  ];
+
+  processSteps = [
+    { n: '01', title: 'ANÁLISE', desc: 'Avaliação das condições e necessidades da operação.' },
+    { n: '02', title: 'PLANEJAMENTO', desc: 'Definição de acesso, materiais e método executivo.' },
+    { n: '03', title: 'SEGURANÇA', desc: 'Procedimentos e preparação antes da execução.' },
+    { n: '04', title: 'EXECUÇÃO', desc: 'Operação técnica com controle do processo.' },
+    { n: '05', title: 'ENTREGA', desc: 'Finalização e conferência dos serviços.' },
+  ];
+
+  safetyRows = [
+    { code: 'NR-35', label: 'TRABALHO EM ALTURA' },
+    { code: 'NR-18', label: 'SEGURANÇA NA OPERAÇÃO' },
+    { code: 'APR', label: 'ANÁLISE PRELIMINAR' },
+    { code: 'ART', label: 'RESPONSABILIDADE TÉCNICA' },
+    { code: 'EQUIPE', label: 'PREPARAÇÃO OPERACIONAL' },
+  ];
+
+  materialsData = [
+    { name: 'CONCRETO', desc: 'Reparo estrutural e tratamento de superfícies.', bg: 'repeating-radial-gradient(circle at 20% 30%,rgba(0,0,0,0.06) 0px,transparent 2px,transparent 6px),repeating-radial-gradient(circle at 70% 80%,rgba(0,0,0,0.05) 0px,transparent 2px,transparent 7px),#C7C2B6' },
+    { name: 'METAL', desc: 'Preparação e pintura técnica de estruturas metálicas.', bg: 'repeating-linear-gradient(96deg,#CBCED0 0px,#CBCED0 2px,#B7BABC 2px,#B7BABC 3px)' },
+    { name: 'EPÓXI', desc: 'Sistemas de piso epóxi de alta exigência.', bg: 'linear-gradient(135deg,#17191b,#2b2e31 45%,#17191b 80%)' },
+    { name: 'PINTURA', desc: 'Revestimento industrial de alta performance.', bg: '#232628' },
+    { name: 'SINALIZAÇÃO', desc: 'Demarcação normativa e sinalização de segurança.', bg: 'repeating-linear-gradient(45deg,#F5A515 0px,#F5A515 20px,#141414 20px,#141414 40px)' },
+  ];
+
+  timeline = [
+    { year: '1979', desc: 'Fundação da empresa e início das operações.' },
+    { year: '2007', desc: 'Expansão para operações especializadas em altura.' },
+    { year: 'HOJE', desc: 'Manutenção predial e soluções industriais integradas.' },
+  ];
+
+  worksData = [
+    { title: 'CENTRAL PARK MOOCA', location: 'SÃO PAULO', n: '01' },
+    { title: 'PROJETO VIVER BELÉM', location: 'SÃO PAULO', n: '02' },
+    { title: 'RESERVA DAS FLORES', location: 'GUARULHOS', n: '03' },
+    { title: 'BONAFONTE', location: 'JUNDIAÍ', n: '04' },
+    { title: 'CARBONO QUÍMICA', location: 'SÃO BERNARDO DO CAMPO', n: '05' },
+    { title: 'ACCIONA WINDPOWER BRASIL', location: 'BAHIA', n: '06' },
+    { title: 'ECOWAY', location: 'SÃO PAULO', n: '07' },
+    { title: 'CENFORPE', location: 'SÃO BERNARDO DO CAMPO', n: '08' },
+  ];
+
+  whyData = [
+    { title: 'EXPERIÊNCIA', desc: 'Décadas de operação em ambientes prediais e industriais complexos.' },
+    { title: 'SEGURANÇA', desc: 'Procedimentos, equipamentos e responsabilidade técnica em cada etapa.' },
+    { title: 'VERSATILIDADE', desc: 'Manutenção, pintura, altura e estruturas em uma única operação.' },
+    { title: 'EXECUÇÃO', desc: 'Equipe própria, planejamento técnico e controle de processo.' },
+  ];
+
+  menuItems = [
+    { n: '01', label: 'SOLUÇÕES', href: '#solucoes' },
+    { n: '02', label: 'ATUAÇÃO', href: '#metodo' },
+    { n: '03', label: 'SEGURANÇA', href: '#seguranca' },
+    { n: '04', label: 'EMPRESA', href: '#empresa' },
+    { n: '05', label: 'CONTATO', href: '#contato' },
+  ];
+
+  iconLineSets = {
+    facade: [[10, 2, 2, 40], [21, 2, 2, 40], [32, 2, 2, 40]],
+    layers: [[6, 10, 32, 3], [6, 20, 32, 3], [6, 30, 22, 3]],
+    rope: [[16, 2, 2, 40], [26, 2, 2, 40]],
+    patch: [[10, 2, 2, 16], [10, 26, 2, 16], [21, 2, 2, 40], [32, 2, 2, 16], [32, 26, 2, 16]],
+    floor: [[6, 12, 32, 2], [6, 21, 32, 2], [6, 30, 32, 2]],
+    hazard: [[4, 34, 10, 4], [16, 22, 10, 4], [28, 10, 10, 4]],
+    beam: [[6, 34, 32, 2], [6, 6, 32, 2], [6, 6, 2, 30]],
+    dots: [[8, 8, 4, 4], [20, 8, 4, 4], [32, 8, 4, 4], [8, 20, 4, 4], [20, 20, 4, 4], [32, 20, 4, 4], [8, 32, 4, 4], [20, 32, 4, 4], [32, 32, 4, 4]],
+  };
+
+  _revealRefCache = {};
+  _ensureIO() {
+    if (!this._io) {
+      this._io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            const id = en.target.dataset.revealId;
+            if (id) this.setState((s) => ({ visible: { ...s.visible, [id]: true } }));
+          }
+        });
+      }, { threshold: 0.18 });
+    }
+    return this._io;
+  }
+
+  revealRef(id) {
+    if (!this._revealRefCache[id]) {
+      this._revealRefCache[id] = (el) => {
+        if (!el) return;
+        if (!this._observedEls) this._observedEls = new Set();
+        if (this._observedEls.has(el)) return;
+        this._observedEls.add(el);
+        el.dataset.revealId = id;
+        this._ensureIO().observe(el);
+      };
+    }
+    return this._revealRefCache[id];
+  }
+
+  componentDidMount() {
+    this.reducedMql = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const rm = this.reducedMql.matches;
+    this._onRM = (e) => this.setState({ reducedMotion: e.matches });
+    this.reducedMql.addEventListener('change', this._onRM);
+
+    this._ensureIO();
+
+    this._onResize = () => this.forceUpdate();
+    window.addEventListener('resize', this._onResize);
+
+    this._onScroll = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => {
+        this._raf = null;
+        this.setState({ scrollY: window.scrollY, scrolled: window.scrollY > window.innerHeight * 0.75 });
+      });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+
+    this.setState({ reducedMotion: rm });
+    setTimeout(() => this.setState({ heroLoaded: true }), 60);
+    const loaderWait = rm ? 300 : 1750;
+    setTimeout(() => this.setState({ loaderDone: true }), loaderWait);
+    setTimeout(() => this.setState({ loaderRemoved: true }), loaderWait + 750);
+
+    if (!rm) {
+      this._ringTimer = setInterval(() => {
+        this.setState({ waRing: true });
+        setTimeout(() => this.setState({ waRing: false }), 900);
+      }, 9000);
+      this._scanTimer = setInterval(() => {
+        this.setState({ scanActive: true });
+        setTimeout(() => this.setState({ scanActive: false }), 1600);
+      }, 7000);
+      this._wordTimer = setInterval(() => {
+        this.setState({ glitching: true });
+        setTimeout(() => {
+          this.setState((s) => ({ wordTick: s.wordTick + 1, glitching: false }));
+        }, 160);
+      }, 2400);
+    }
+  }
+
+  onHeroMouseMove = (e) => {
+    if (window.innerWidth <= 860 || this.state.reducedMotion) return;
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    this.setState({ heroMouse: { x, y } });
+  };
+  onHeroMouseLeave = () => this.setState({ heroMouse: { x: 0, y: 0 } });
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('resize', this._onResize);
+    if (this.reducedMql) this.reducedMql.removeEventListener('change', this._onRM);
+    if (this._io) this._io.disconnect();
+    if (this._ringTimer) clearInterval(this._ringTimer);
+    if (this._scanTimer) clearInterval(this._scanTimer);
+    if (this._wordTimer) clearInterval(this._wordTimer);
+  }
+
+  componentDidUpdate() {
+    if (this.state.menuOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+  }
+
+  toggleMenu = () => this.setState((s) => ({ menuOpen: !s.menuOpen }));
+
+  buildIconLines(type, active) {
+    const set = this.iconLineSets[type] || [];
+    return set.map(([l, t, w, h]) => 'position:absolute;left:' + l + 'px;top:' + t + 'px;width:' + w + 'px;height:' + h + 'px;background:' + (active ? '#F5A515' : 'rgba(243,241,234,0.35)') + ';transition:background 0.3s ease;');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const isMobile = window.innerWidth <= 860;
+    const isDesktop = !isMobile;
+    const rm = s.reducedMotion;
+    const padY = isMobile ? '72px' : '130px';
+    const whatsapp = (this.props.whatsappNumber || '5511951007967').replace(/\D/g, '');
+    const waLink = 'https://wa.me/' + whatsapp + '?text=' + encodeURIComponent('Olá, gostei muito do site! Quero colocar o site no ar!');
+
+    const vis = s.visible;
+    const vv = (id) => !!vis[id] || rm;
+    const reveal = (id) => 'opacity:' + (vv(id) ? 1 : 0) + ';transform:translateY(' + (vv(id) ? 0 : 26) + 'px);transition:opacity 0.9s cubic-bezier(.16,1,.3,1),transform 0.9s cubic-bezier(.16,1,.3,1);';
+    const servicesReveal = reveal('services');
+    const processReveal = reveal('process');
+    const safetyReveal = reveal('safety');
+    const materialReveal = reveal('material');
+    const workReveal = reveal('work');
+    const whyReveal = reveal('why');
+    const ctaReveal = reveal('cta');
+
+    const dark = !s.scrolled;
+    const navTextColor = dark ? '#FFFFFF' : '#050505';
+    const navBg = dark ? '#010302' : '#FFFFFF';
+    const navStyle = 'position:fixed;top:0;left:0;right:0;height:' + (isMobile ? '64px' : '72px') + ';z-index:60;display:flex;align-items:center;justify-content:' + (isMobile ? 'space-between' : 'space-between') + ';padding:0 clamp(20px,4vw,56px);background:' + navBg + ';border-bottom:1px solid ' + (dark ? 'rgba(255,255,255,0.1)' : 'rgba(5,5,5,0.1)') + ';box-shadow:' + (dark ? 'none' : '0 4px 20px rgba(0,0,0,0.06)') + ';color:' + navTextColor + ';transition:all 0.4s ease;';
+    const navLinkStyle = 'font-family:var(--fm);font-size:13px;letter-spacing:0.03em;font-weight:500;color:' + navTextColor + ';white-space:nowrap;';
+    const navCtaStyle = 'font-size:13px;letter-spacing:0.01em;font-weight:700;color:var(--ink);background:var(--orange);padding:11px 20px;border-radius:4px;white-space:nowrap;transition:transform 0.25s cubic-bezier(.16,1,.3,1),filter 0.25s ease,box-shadow 0.25s ease;display:inline-block;';
+    const navCtaHoverStyle = 'transform:translateY(-2px) scale(1.04);filter:brightness(1.1);box-shadow:0 10px 22px rgba(245,165,21,0.4);';
+    const navLogoHeight = isMobile ? 36 : 48;
+    const navLogoBg = navBg;
+    const navLogoFilter = dark ? 'none' : 'invert(1)';
+    const navWord = this.navWords[s.wordTick % this.navWords.length];
+
+    const mobileMenuStyle = 'position:fixed;inset:0;z-index:70;background:#050505;color:var(--warm);display:flex;flex-direction:column;clip-path:' + (s.menuOpen ? 'inset(0 0 0 0)' : 'inset(0 0 100% 0)') + ';transition:clip-path 0.5s cubic-bezier(.16,1,.3,1);';
+    const menuItems = this.menuItems.map((mi, i) => ({
+      ...mi,
+      style: 'display:flex;align-items:center;padding:16px 0;border-bottom:1px solid rgba(243,241,234,0.1);font-size:clamp(20px,5.5vw,26px);font-weight:600;color:var(--warm);opacity:' + (s.menuOpen ? 1 : 0) + ';transform:translateY(' + (s.menuOpen ? 0 : 12) + 'px);transition:all 0.4s ease ' + (i * 60) + 'ms;',
+    }));
+
+    const heroOp = s.heroLoaded || rm ? 1 : 0;
+    const heroScale = rm ? 1 : Math.min(1.04, 1 + s.scrollY / 3600);
+    const heroShift = rm ? 0 : Math.min(30, s.scrollY * 0.06);
+    const heroSectionStyle = 'position:relative;min-height:100svh;background:var(--obsidian);overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;justify-content:' + (isMobile ? 'flex-start' : 'center') + ';padding:' + (isMobile ? '39dvh 24px 48px' : '110px clamp(24px,6vw,80px) 0') + ';';
+    const mx = s.heroMouse.x, my = s.heroMouse.y;
+    const heroImgTransform = 'scale(' + heroScale + ') translate(' + (mx * -10) + 'px,' + (my * -8) + 'px)';
+    const heroContentStyle = 'position:relative;z-index:1;transform:translate(' + (mx * 6) + 'px,' + (-heroShift + my * 4) + 'px);' + (isMobile ? 'width:100%;' : 'max-width:min(400px,37%);');
+    const heroWord = this.heroWords[s.wordTick % this.heroWords.length];
+    const brandWord = this.brandWords[s.wordTick % this.brandWords.length];
+    const glitchTransform = s.glitching ? 'translateX(2px) skewX(2deg)' : 'translateX(0) skewX(0)';
+    const glitchColor = s.glitching ? 'var(--orange)' : 'inherit';
+
+    const credItems = [
+      { n: '1979', l: 'INÍCIO DA HISTÓRIA' },
+      { n: 'PREDIAL', l: 'MANUTENÇÃO E FACHADAS' },
+      { n: 'INDUSTRIAL', l: 'PINTURA E REVESTIMENTOS' },
+      { n: 'ALTURA', l: 'OPERAÇÕES ESPECIALIZADAS' },
+    ].map((c, i) => ({ ...c, delay: (i * 90) + 'ms', wrapStyle: 'padding:' + (isMobile ? '0' : '36px 24px') + ';' }));
+
+    const buildServices = () => this.services.map((sv, i) => {
+      const active = s.hoverService === i || s.openServiceMobile === i;
+      return {
+        ...sv,
+        active,
+        numColor: active ? '#F5A515' : 'rgba(243,241,234,0.5)',
+        rowStyle: 'position:relative;padding:22px 0;border-bottom:1px solid rgba(243,241,234,0.14);cursor:pointer;padding-left:16px;',
+        descRows: active ? '1fr' : '0fr',
+        iconLines: this.buildIconLines(sv.icon, active),
+        onHover: () => { if (isDesktop) this.setState({ hoverService: i }); },
+        onLeave: () => { if (isDesktop) this.setState({ hoverService: null }); },
+        onToggleMobile: () => { if (isMobile) this.setState((st) => ({ openServiceMobile: st.openServiceMobile === i ? null : i })); },
+      };
+    });
+
+    const processLineAxis = isMobile ? 'left:5px;top:0;bottom:0;width:2px;' : 'left:0;right:0;top:0;height:2px;';
+    const processLineFillAxis = isMobile
+      ? 'left:5px;top:0;width:2px;height:' + (vv('process') ? '100%' : '0%') + ';'
+      : 'left:0;top:0;height:2px;width:' + (vv('process') ? '100%' : '0%') + ';';
+    const processListStyle = isMobile ? 'display:flex;flex-direction:column;' : 'display:flex;gap:20px;';
+    const buildProcess = () => this.processSteps.map((st, i) => ({
+      ...st,
+      wrapStyle: isMobile
+        ? 'padding-left:28px;padding-bottom:36px;opacity:' + (vv('process') ? 1 : 0) + ';transform:translateX(' + (vv('process') ? 0 : -14) + 'px);transition:all 0.55s ease ' + (i * 80) + 'ms;'
+        : 'flex:1;padding-top:24px;opacity:' + (vv('process') ? 1 : 0) + ';transform:translateY(' + (vv('process') ? 0 : 14) + 'px);transition:all 0.55s ease ' + (i * 80) + 'ms;',
+    }));
+
+    const materialCols = isMobile ? 'repeat(3,1fr)' : 'repeat(5,1fr)';
+    const buildMaterials = () => this.materialsData.map((m, i) => ({
+      ...m,
+      hover: s.hoverMaterial === i,
+      onEnter: () => this.setState({ hoverMaterial: i }),
+      onLeave: () => this.setState({ hoverMaterial: null }),
+    }));
+
+    const buildWorks = () => this.worksData.map((w, i) => ({
+      ...w,
+      hover: s.hoverWork === i,
+      rowStyle: 'position:relative;display:flex;align-items:center;justify-content:space-between;padding:18px 0 18px 16px;border-bottom:1px solid rgba(20,20,20,0.14);',
+      onEnter: () => this.setState({ hoverWork: i }),
+      onLeave: () => this.setState({ hoverWork: null }),
+    }));
+
+    const buildWhy = () => this.whyData.map((wi, i) => ({
+      ...wi,
+      delay: (i * 100) + 'ms',
+      dotOp: vv('why') ? 1 : 0,
+      wrapStyle: 'padding:' + (isMobile ? '20px' : '0 28px') + ';border-left:' + (isMobile ? 'none' : (i === 0 ? 'none' : '1px solid rgba(243,241,234,0.14)')) + ';border-top:' + (isMobile ? (i < 2 ? 'none' : '1px solid rgba(243,241,234,0.14)') : 'none') + ';',
+    }));
+
+    const ropeShift1 = rm ? 0 : Math.sin(s.scrollY / 420) * 12;
+    const ropeShift2 = rm ? 0 : Math.cos(s.scrollY / 520) * 16;
+
+    const scanY = s.scanActive ? 4200 : -20;
+    const scanOp = s.scanActive ? 1 : 0;
+
+    const baPosR = 0;
+    const waSize = isMobile ? 56 : 60;
+    const waWrapStyle = 'position:fixed;bottom:' + (isMobile ? '20px' : '30px') + ';right:' + (isMobile ? '20px' : '30px') + ';z-index:65;';
+    const waRingStyle = 'position:absolute;inset:0;border-radius:999px;border:1.5px solid #25D366;opacity:' + (s.waRing && !rm ? 1 : 0) + ';transform:scale(' + (s.waRing && !rm ? 1.8 : 0.9) + ');transition:opacity 0.9s ease,transform 0.9s ease;pointer-events:none;';
+    const waButtonStyle = 'position:relative;display:flex;align-items:center;justify-content:center;gap:0px;height:' + waSize + 'px;padding:0 ' + (waSize / 2 - 12) + 'px;border-radius:999px;background:#25D366;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.32);animation:' + (rm ? 'none' : 'waBreathe 5s ease-in-out infinite') + ';';
+    const waButtonHoverStyle = 'padding-right:20px;gap:10px;transform:scale(1.06);box-shadow:0 8px 22px rgba(0,0,0,0.4);';
+    const waLabelStyle = 'font-family:var(--fm);font-size:11px;font-weight:500;color:#050505;max-width:0;overflow:hidden;white-space:nowrap;opacity:0;transition:max-width 0.3s ease,opacity 0.3s ease;';
+    const waLabelHoverStyle = 'max-width:160px;opacity:1;';
+
+    return {
+      isMobile, isDesktop, padY, heroOp, heroImgTransform,
+      onHeroMouseMove: this.onHeroMouseMove, onHeroMouseLeave: this.onHeroMouseLeave,
+      heroWord, brandWord, glitchTransform, glitchColor,
+      navStyle, navLinkStyle, navCtaStyle, navCtaHoverStyle, navTextColor, navLogoHeight, navLogoBg, navLogoFilter, navWord,
+      loaderDone: s.loaderDone, loaderRemoved: s.loaderRemoved,
+      toggleMenu: this.toggleMenu, mobileMenuStyle, menuItems,
+      waLink,
+      heroSectionStyle, heroContentStyle, heroScale,
+      credRef: this.revealRef('cred'), credItems, vis: { cred: vv('cred') ? '100%' : '0%', intro_clip: '', rope: vv('brand') ? '100%' : '0%', dot1: vv('brand') ? 1 : 0, dot2: vv('brand') ? 1 : 0, height_op: vv('height') ? 1 : 0, exp_line: vv('exp') ? '100%' : '0%' },
+      brandRef: this.revealRef('brand'),
+      servicesRef: this.revealRef('services'), services: buildServices(), servicesReveal,
+      heightRef: this.revealRef('height'), ropeShift1, ropeShift2,
+      processRef: this.revealRef('process'), processSteps: buildProcess(), processLineAxis, processLineFillAxis, processListStyle, processReveal,
+      safetyRef: this.revealRef('safety'), safetyRows: this.safetyRows, scanY, scanOp, safetyReveal,
+      materialRef: this.revealRef('material'), materials: buildMaterials(), materialCols, materialReveal,
+      expRef: this.revealRef('exp'), timeline: this.timeline,
+      workRef: this.revealRef('work'), works: buildWorks(), workReveal,
+      whyRef: this.revealRef('why'), whyItems: buildWhy(), whyReveal,
+      ctaRef: this.revealRef('cta'), ctaReveal,
+      waWrapStyle, waRingStyle, waButtonStyle, waButtonHoverStyle, waLabelStyle, waLabelHoverStyle,
+      contactEmail: this.props.contactEmail || 'contato@newcollor.com.br',
+      currentYear: new Date().getFullYear(),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
